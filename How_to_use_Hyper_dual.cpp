@@ -2,7 +2,7 @@
 #include <vector>
 #include <cmath>
 #include "header/NS_dual.hpp"
-#include "header/nonapy2.hpp"
+/*#include "header/nonapy2.hpp"
 #include "header/NS_Hyperdual.hpp"
 using namespace std;
 using namespace LibNS2;
