@@ -1,6 +1,6 @@
 // ---------------------------------------------------------------------------------------------------
-// NS_dual VERSION 1.0.0
-// Latest Edit: 20/04/04.
+// NS_dual VERSION 1.1.0
+// Latest Edit: 20/04/11.
 //
 // Copyright (C) 2020 Nonaka Soshi †
 // † Master of Science, Department of Physics, Osaka University, Japan.
@@ -12,6 +12,8 @@
 #include <iostream>
 #include <vector>
 #include <cmath>
+#include "../LibMK4/integ.hpp"
+using namespace LibMK4;
 using namespace std;
 
 /*----------------------------------------------------------------
@@ -23,6 +25,11 @@ public:
     double diff;
     dual(){}
     dual(double x, double y=1.0) : value(x), diff(y){}
+    dual& operator+= (dual y);
+    dual& operator-= (dual y);
+    dual& operator*= (double y);
+    dual& operator/= (double y);
+    dual operator- () const;
 };
 
 
@@ -69,6 +76,13 @@ dual operator-(dual x, double y){
     ref.value = x.value - y;
     ref.diff = x.diff;
     return ref;
+}
+
+dual dual::operator- () const{
+	dual ref;
+	ref.value = -value;
+	ref.diff = -diff;
+	return ref;
 }
 
 dual operator*(dual x, dual y){
@@ -174,4 +188,105 @@ dual tanh(dual x){
     ref.value = tanh(x.value);
     ref.diff = 1.0 / ( cosh(x.value) * cosh(x.value) ) * x.diff;
     return ref;
+}
+
+/*----------------------------------------------------------------
+   論理演算子の再定義
+ -----------------------------------------------------------------*/
+bool operator> (dual x, dual y){
+	return (x.value > y.value);
+}
+
+bool operator> (double x,dual y){
+	return (x > y.value);
+}
+
+bool operator> (dual x, double y){
+	return (x.value > y);
+}
+
+bool operator>= (double x, dual y){
+	return (x >= y.value);
+}
+
+bool operator>= (dual x, double y){
+	return (x.value >= y);
+}
+
+bool operator< (dual x, dual y){
+	return (x.value < y.value);
+}
+
+bool operator< (double x, dual y){
+	return (x < y.value);
+}
+
+bool operator< (dual x, double y){
+	return (x.value < y);
+}
+
+bool operator<= (dual x, dual y){
+	return (x.value <= y.value);
+}
+
+bool operator<= (double x, dual y){
+	return (x <= y.value);
+}
+
+bool operator<= (dual x, double y){
+	return (x.value <= y);
+}
+
+bool operator== (dual x, dual y){
+	return (x.value == y.value);
+}
+
+bool operator== (double x, dual y){
+	return (x == y.value);
+}
+
+bool operator== (dual x, double y){
+	return (x.value == y);
+}
+
+bool operator!= (dual x, dual y){
+	return (x.value != y.value);
+}
+
+bool operator!= (double x, dual y){
+	return (x != y.value);
+}
+
+bool operator!= (dual x, double y){
+	return (x.value != y);
+}
+
+dual& dual::operator+= (dual y){
+	value += y.value;
+	diff += y.diff;
+	return *this;
+}
+dual& dual::operator-= (dual y){
+	value -= y.value;
+	diff -= y.diff;
+	return *this;
+}
+
+dual& dual::operator*= (double y){
+	value *= y;
+	diff *= y;
+	return *this;
+}
+
+dual& dual::operator/= (double y){
+	value /= y;
+	diff /= y;
+	return *this;
+}
+
+dual fabs(dual x){
+	dual ref;
+	if (x < 0.0) ref = 0.0-x;
+	else ref = x;
+	return ref;
 }
